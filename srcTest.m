@@ -180,7 +180,7 @@ classdef srcTest < matlab.unittest.TestCase
             dstar = rand(2*p.N*p.N*p.T, 1);
             u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
             c = 4;
-            actual = augmentedLagrangian(p, c, dstar, u);
+            actual = augmentedLagrangian(p, c, u, dstar);
             testCase.assertEqual(size(actual), [1 1]);
         end
     end
