@@ -5,6 +5,7 @@ utils = struct();
 utils.computeIncentivizedFlow = @computeIncentivizedFlow;
 utils.swapStationIndices = @swapStationIndices;
 utils.toStationTimeIndex = @toStationTimeIndex;
+utils.splitDstar = @splitDstar;
 end
 
 function [f] = computeIncentivizedFlow(p, alpha, dinc, dstar)
@@ -28,7 +29,14 @@ function [matrix] = toStationTimeIndex(p, vector)
             matrix = reshape(vector, p.N, p.T);
         case (p.N * p.N * p.T)
             matrix = reshape(vector, p.N, p.N, p.T);
+        case (p.N * p.N)
+            matrix = reshape(vector, p.N, p.N);
         otherwise
             error("toStationTimeIndex:badNumel", "wrong number of elements");
     end
+end
+
+function [dstarO, dstarD] = splitDstar(p, dstar)
+    dstarO = dstar(1:(p.N*p.N*p.T));
+    dstarD = dstar((p.N*p.N*p.T+1):end);
 end

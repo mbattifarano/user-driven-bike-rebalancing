@@ -16,9 +16,10 @@ function [parameters] = generateTestParameters()
     p.alphaD = 0.5;    %   cooperativeness parameter for switching destinations
     p.b = randi([5, 10], p.N, 1);   % station capacity
 
-    cO = rand(p.N) * 5;
-    cD = rand(p.N) * 2.5;
-    p.c = [cO(:); cD(:)];   % incentive required to change origin or desination station
+    cO = rand(p.N, p.N) * 5;
+    cD = rand(p.N, p.N) * 2.5;
+    p.cO = cO(:);
+    p.cD = cD(:);   % incentive required to change origin or desination station
     p.s = floor(p.b / 2);   % initial number of bicycles at each station
 
     p.dO = populateDemandMatrix(p, -1); % O-D-t travel demand
