@@ -166,5 +166,14 @@ classdef srcTest < matlab.unittest.TestCase
             expected = first_term + second_term;
             testCase.assertLessThan(abs(actual - expected), 0.00001);
         end
+        
+        function testConstraints(testCase)
+            p = generateTestParameters();
+            u = support();
+            nConstraints = 2*p.N*p.N*p.T + 2*p.N*p.T + 1;
+            dstar = rand(2*p.N*p.N*p.T, 1);
+            actual = constraints(p, dstar);
+            testCase.assertEqual(size(actual), [nConstraints, 1]);
+        end
     end
 end
