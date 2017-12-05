@@ -1,4 +1,4 @@
-function [value] = augmentedLagrangian(parameters, c, dstar, u)
+function [value] = augmentedLagrangian(parameters, c, u, dstar)
 %AUGMENTEDLAGRANGIAN Returns the value of the augmented lagrangian 
 %   Inputs
 %       parameters  (struct)    parameter struct
