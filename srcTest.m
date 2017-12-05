@@ -169,11 +169,19 @@ classdef srcTest < matlab.unittest.TestCase
         
         function testConstraints(testCase)
             p = generateTestParameters();
-            u = support();
             nConstraints = 2*p.N*p.N*p.T + 2*p.N*p.T + 1;
             dstar = rand(2*p.N*p.N*p.T, 1);
             actual = constraints(p, dstar);
             testCase.assertEqual(size(actual), [nConstraints, 1]);
+        end
+        
+        function testAugmentedLagrangian(testCase)
+            p = generateTestParameters();
+            dstar = rand(2*p.N*p.N*p.T, 1);
+            u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
+            c = 4;
+            actual = augmentedLagrangian(p, c, dstar, u);
+            testCase.assertEqual(size(actual), [1 1]);
         end
     end
 end
