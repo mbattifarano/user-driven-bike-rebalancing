@@ -199,5 +199,8 @@ classdef srcTest < matlab.unittest.TestCase
             testCase.assertEqual(size(actual_u), size(u));
             testCase.assertNotEqual(actual_u, u);
         end
+
+        function testLargeDemand(testCase)
+        end
     end
 end
