@@ -183,5 +183,21 @@ classdef srcTest < matlab.unittest.TestCase
             actual = augmentedLagrangian(p, c, u, dstar);
             testCase.assertEqual(size(actual), [1 1]);
         end
+
+        function testFullOptimization(testCase)
+            p = generateTestParameters();
+            dstar = rand(2*p.N*p.N*p.T, 1);
+            u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
+            opts = struct();
+            opts.nIter = 5;
+            opts.innerIter = 5;
+            opts.c0 = 4;
+            opts.beta = 8;
+            [actual_dstar, actual_u] = augLagrangeMethod(p, opts, u, dstar);
+            testCase.assertEqual(size(actual_dstar), size(dstar));
+            testCase.assertNotEqual(actual_dstar, dstar);
+            testCase.assertEqual(size(actual_u), size(u));
+            testCase.assertNotEqual(actual_u, u);
+        end
     end
 end
