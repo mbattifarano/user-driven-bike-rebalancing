@@ -28,8 +28,8 @@ elseif strcmp(incentive_method,'linear_utility')
 station_struct.origin_incentive = dist*origin_comp;
 station_struct.destination_incentive = dist*dest_comp;
 elseif strcmp(incentive_method,'translog_utility') % formula to be confirmed
-station_struct.origin_incentive = ln(dist)*origin_comp;
-station_struct.destination_incentive = ln(dist)*dest_comp;
+station_struct.origin_incentive = log(dist)*origin_comp;
+station_struct.destination_incentive = log(dist)*dest_comp;
 end
 
 end
