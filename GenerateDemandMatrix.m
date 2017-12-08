@@ -125,7 +125,7 @@ for s = 1:length(SYSTEMS)
         EndDemand = EndDemand/regularization2;
         
         % Save start and end station demand matrices
-        save([System ' ' char(timeInterval) '.mat'],'StartDemand','EndDemand','-v7.3');
+        save([System ' ' char(timeInterval) '.mat'],'StartDemand','EndDemand','StationIds','-v7.3');
         
     end
 end
