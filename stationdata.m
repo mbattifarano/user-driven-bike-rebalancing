@@ -14,7 +14,9 @@ elseif strcmp(system,'Minneapolis')
 elseif strcmp(system,'London')
     londonkiosks = importlondonkiosk('bikepoint.json');
     dist = createdistancematrix(londonkiosks.lat,londonkiosks.lon);
-    station_struct.capacity = rmfield(londonkiosks.nbdocks,{'lat','lon'});
+    station_struct.capacity = londonkiosks;
+    station_struct.capacity.lat = [];
+    station_struct.capacity.lon = [];
 end
 
 % construct incentive matrix
