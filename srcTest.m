@@ -22,76 +22,6 @@ classdef srcTest < matlab.unittest.TestCase
             testCase.assertError(@()(utils.toStationTimeIndex(p, d4)), "toStationTimeIndex:badNumel");
         end
 
-        function testfin(testCase)
-            p = generateTestParameters();
-            u = support();
-            dD = u.toStationTimeIndex(p, p.dD);
-            expected = zeros(p.N, p.T);
-            for i = 1:p.N
-                for t = 1:p.T
-                    for j = 1:p.N
-                        expected(i, t) = expected(i, t) + dD(j, i, t);
-                    end
-                end
-            end
-            actual = p.fin;
-            testCase.assertEqual(actual, expected(:));
-        end
-
-        function testfout(testCase)
-            p = generateTestParameters();
-            u = support();
-            dO = u.toStationTimeIndex(p, p.dO);
-            expected = zeros(p.N, p.T);
-            for i = 1:p.N
-                for t = 1:p.T
-                    for j = 1:p.N
-                        expected(i, t) = expected(i, t) + dO(i, j, t);
-                    end
-                end
-            end
-            actual = p.fout;
-            testCase.assertEqual(actual, expected(:));
-        end
-
-        function testfoutstar(testCase)
-            p = generateTestParameters();
-            u = support();
-            dstarO = randi(2, p.N, p.N, p.T);
-            dOinc = u.toStationTimeIndex(p, p.dOinc);
-            actual = p.foutstar(dstarO(:));
-            expected = zeros(p.N, p.T);
-            for i = 1:p.N
-                for t = 1:p.T
-                    for j = 1:p.N
-                        expected(i, t) = expected(i, t) + ...
-                                         (p.alphaO * dstarO(j, i, t) + dOinc(j, i, t)) - ...
-                                         (p.alphaO * dstarO(i, j, t) + dOinc(i, j, t));
-                    end
-                end
-            end
-            testCase.assertEqual(actual, expected(:));
-        end
-
-        function testfinstar(testCase)
-            p = generateTestParameters();
-            u = support();
-            dstarD = randi(2, p.N, p.N, p.T);
-            dDinc = u.toStationTimeIndex(p, p.dDinc);
-            actual = p.finstar(dstarD(:));
-            expected = zeros(p.N, p.T);
-            for i = 1:p.N
-                for t = 1:p.T
-                    for j = 1:p.N
-                        expected(i, t) = expected(i, t) + ...
-                                         (p.alphaD * dstarD(j, i, t) + dDinc(j, i, t)) - ...
-                                         (p.alphaD * dstarD(i, j, t) + dDinc(i, j, t));
-                    end
-                end
-            end
-            testCase.assertEqual(actual, expected(:));
-        end
-
         function testfhat(testCase)
             p = generateTestParameters();
             u = support();
@@ -101,7 +31,7 @@ classdef srcTest < matlab.unittest.TestCase
             dstarD = randi(2, p.N, p.N, p.T);
             dOinc = u.toStationTimeIndex(p, p.dOinc);
             dDinc = u.toStationTimeIndex(p, p.dDinc);
-            actual = p.fhat(dstarO(:), dstarD(:));
+            actual = netFlow(p, dstarO(:), dstarD(:));
             expected = zeros(p.N, p.T);
             for i = 1:p.N
                 for t = 1:p.T
@@ -140,7 +70,7 @@ classdef srcTest < matlab.unittest.TestCase
             second_term = 0;
             [dstarO, dstarD] = u.splitDstar(p, dstar);
             % first term
-            fhat = u.toStationTimeIndex(p, p.fhat(dstarO, dstarD));
+            fhat = u.toStationTimeIndex(p, netFlow(p, dstarO, dstarD));
             for i = 1:p.N
                 time_sum = 0;
                 for t = 1:p.T
