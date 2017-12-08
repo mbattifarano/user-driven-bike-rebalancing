@@ -10,4 +10,3 @@ function [x, u] = augLagrangeMethod(parameters, opts, u_init, x_init)
         u = max(0, u + c * constraints(parameters, x));
     end
 end
-

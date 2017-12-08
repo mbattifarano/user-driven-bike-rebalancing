@@ -29,16 +29,7 @@ function [parameters] = generateTestParameters()
     p.dDinc = populateDemandMatrix(p, 4); % O-D-t travel demand that has already accepted an incentive
     %% computed data
     
-    fout = squeeze(sum(reshape(p.dO, p.N, p.N, p.T), 2));
-    p.fout = fout(:);   % number of bikes leaving station i at time t
-    fin = squeeze(sum(reshape(p.dD, p.N, p.N, p.T), 1));
-    p.fin = fin(:);     % number of bikes arriving to station i at time t
     
-    %TODO: pull these out to their own functions
-    p.foutstar = @(dstarO)(utils.computeIncentivizedFlow(p, p.alphaO, p.dOinc, dstarO)); % incentivized flow out
-    p.finstar = @(dstarD)(utils.computeIncentivizedFlow(p, p.alphaD, p.dDinc, dstarD)); % incentivized flow in
-    
-    p.fhat = @(dstarO, dstarD)((p.fin + p.finstar(dstarD)) - (p.fout + p.foutstar(dstarO))); % net flow
 
     parameters = p;
 end
