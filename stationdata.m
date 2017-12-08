@@ -6,11 +6,15 @@ function station_struct = stationdata(system, origin_comp, dest_comp, incentive_
 if strcmp(system,'Denver')
     october2016kioskinfo = unique(importdenverkiosk('october2016_kioskinfo.csv', 2, 90));
     dist = createdistancematrix(october2016kioskinfo.Latitude,october2016kioskinfo.Longitude);
-    station_struct.capacity = rmfield(october2016kioskinfo,{'Latitude','Longitude'});
+    station_struct.capacity = october2016kioskinfo;
+    station_struct.capacity.Latitude = [];
+    station_struct.capacity.Longitude = [];
 elseif strcmp(system,'Minneapolis')
     NiceRide2016StationLocations = unique(importminnkiosk('Nice_Ride_2016_Station_Locations.csv', 2, 203));
     dist = createdistancematrix(NiceRide2016StationLocations.Latitude,NiceRide2016StationLocations.Longitude);
-    station_struct.capacity = rmfield(NiceRide2016StationLocations,{'Latitude','Longitude'});
+    station_struct.capacity = NiceRide2016StationLocations;
+    station_struct.capacity.Latitude = [];
+    station_struct.capacity.Longitude = [];
 elseif strcmp(system,'London')
     londonkiosks = importlondonkiosk('bikepoint.json');
     dist = createdistancematrix(londonkiosks.lat,londonkiosks.lon);
