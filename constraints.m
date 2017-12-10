@@ -14,10 +14,10 @@ function [values] = constraints(parameters, dstar)
     [dstarO, dstarD] = u.splitDstar(p, dstar);
     bike_count = cumsum(u.toStationTimeIndex(p, netFlow(p, dstarO, dstarD)), 2);
     values = [
-        dstar;
+        -dstar;
         p.alphaO * dot(cO(:), dstarO(:)) + p.alphaD * dot(cD(:), dstarD(:)) - p.C;
         -s(:) - bike_count(:);
-        s(:) + bike_count(:) - b(:)
+        s(:) + bike_count(:) - b(:);
     ];
 end
 

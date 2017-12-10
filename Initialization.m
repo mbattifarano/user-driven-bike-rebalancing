@@ -2,7 +2,7 @@ function p = Initialization()
 
 % PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-p.T = 228; % timestep horizon (p.T*TimeInterval represents length of horizon in minutes)
+p.T = 288; % timestep horizon (p.T*TimeInterval represents length of horizon in minutes)
 p.C = 100; % maximum daily budget for incentives
 p.lambda = 0.1; % cost to rebalance a bike manually
 p.alphaO = 0.75; % cooperativeness parameter for switching origins

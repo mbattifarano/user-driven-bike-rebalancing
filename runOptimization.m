@@ -1,6 +1,6 @@
 %% Run optimization
 
-fprintf("Preparing data and parameters.");
+fprintf("Preparing data and parameters.\n");
 %% Setup problem parameters/data
 p = Initialization();
 
@@ -14,18 +14,18 @@ p.dDinc = p.dDinc(:);
 
 %% Setup optimization parameters
 
-o = struct();
+opts = struct();
 
 opts.nIter = 10;
 opts.innerIter = 5;
-opts.c0 = 4;
+opts.c0 = 100;
 opts.beta = 8;
 
 %% Run algorithm
 
 nConstraints = 2*p.N*p.N*p.T + 2*p.N*p.T + 1;
 u_init = zeros(nConstraints, 1);
-x_init = zeros(p.N*p.N*p.T, 1);
+x_init = zeros(2*p.N*p.N*p.T, 1);
 
-fprintf("Starting optimization.")
-[x, u, history] = augLagrangeMethod(p, o, u_init, x_init);
+fprintf("Starting optimization.\n")
+[x, u, history] = augLagrangeMethod(p, opts, u_init, x_init);

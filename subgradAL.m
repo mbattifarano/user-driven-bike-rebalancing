@@ -1,55 +1,47 @@
 function [grad] = subgradAL(parameters, ck, uj, dstar)
 %SUBGRADAL Returns the subgradient of the augmented lagrangian at dstar, u
     p = parameters;
-    u = support();
     
-    [dstarO, dstarD] = u.splitDstar(p, dstar);
-    dstarO = u.toStationTimeIndex(p, dstarO);
-    dstarD = u.toStationTimeIndex(p, dstarD);
-    cO = repmat(u.toStationTimeIndex(p, p.cO), [1, 1, p.T]);
-    cD = repmat(u.toStationTimeIndex(p, p.cD), [1, 1, p.T]);
-    revI = repmat(abs(eye(p.N) - 1), [1, 1, p.T]);  % "converse" identity (ones everywhere except the diagonal)
-    
-    % objective function gradient
-    gfO = (2 * p.alphaO * revI);
-    gfD = (2 * p.alphaD * revI);
-    grad_fO = gfO(:) .* sign(dstarO(:)) .* (p.alphaO * cO(:));
-    grad_fD = gfD(:) .* sign(dstarD(:)) .* (p.alphaD * cD(:));
+    [grad_fO, grad_fD, gfO, gfD, cO, cD] = objectiveSubgradient(p, dstar);
 
     % constraint portion gradient
-    g = constraints(p, dstar);
-    gu = uj + ck * g;
-    ggeq0 = (gu >= 0);
+    gu = 2 * ck * max(0, uj + ck * constraints(p, dstar));
 
-    % non-negative
+    %non-negative
     idx = 1:(p.N*p.N*p.T);
-    grad_gO = -2 * ck * gu(idx) .* (p.alphaO * cO(:)) .* ggeq0(idx);
+    grad_gO = -gu(idx);
 
     idx = p.N*p.N*p.T + (1:(p.N*p.N*p.T));
-    grad_gD = -2 * ck * gu(idx) .* (p.alphaD * cD(:)) .* ggeq0(idx);
+    grad_gD = -gu(idx);
+    
     % Within budget
     idx = (2*p.N*p.N*p.T+1);
-    grad_gO = grad_gO + 2 * ck * gu(idx) * p.alphaO * cO(:) * ggeq0(idx);
-    grad_gD = grad_gD + 2 * ck * gu(idx) * p.alphaD * cD(:) * ggeq0(idx);
+    grad_gO = grad_gO + gu(idx) * p.alphaO * cO(:);
+    grad_gD = grad_gD + gu(idx) * p.alphaD * cD(:);
+    
     % non-negative bikes
     idx = (2*p.N*p.N*p.T+1) + (1:(p.N*p.T));
-    g_bike_min = 2 * ck * g(idx) .* ggeq0(idx);
-    g_bike_min = cumsum(repmat(reshape(g_bike_min, [p.N, 1, p.T]), [1, p.N, 1]), 3);
+    g_bike_min_i = flip(cumsum(repmat(reshape(gu(idx), [p.N, 1, p.T]), [1, p.N, 1]), 3), 3);
+    g_bike_min_j = flip(cumsum(repmat(reshape(gu(idx), [1, p.N, p.T]), [p.N, 1, 1]), 3), 3);
 
-    gfhatO = -gfO .* g_bike_min;
+    gfhatO = -p.alphaO * (g_bike_min_i - g_bike_min_j);
     grad_gO = grad_gO + gfhatO(:);
-    gfhatD = -gfD .* g_bike_min;
+    gfhatD = -p.alphaD * (g_bike_min_j - g_bike_min_i);
     grad_gD = grad_gD + gfhatD(:);
 
     % stations under capacity
     idx = (2*p.N*p.N*p.T + 1 + p.N*p.T) + (1:(p.N*p.T));
-    g_bike_max = 2 * ck * g(idx) .* ggeq0(idx);
-    g_bike_max = cumsum(repmat(reshape(g_bike_max, [p.N, 1, p.T]), [1, p.N, 1]), 3);
+    g_bike_max_i = flip(cumsum(repmat(reshape(gu(idx), [p.N, 1, p.T]), [1, p.N, 1]), 3), 3);
+    g_bike_max_j = flip(cumsum(repmat(reshape(gu(idx), [1, p.N, p.T]), [p.N, 1, 1]), 3), 3);
 
-    gfhatO = gfO .* g_bike_max;
+    gfhatO = p.alphaO * (g_bike_max_i - g_bike_max_j);
     grad_gO = grad_gO + gfhatO(:);
-    gfhatD = gfD .* g_bike_max;
+    gfhatD = p.alphaD * (g_bike_max_j - g_bike_max_i);
     grad_gD = grad_gD + gfhatD(:);
+    
+    % 1/2c coefficient
+    grad_gO = grad_gO / (2*ck);
+    grad_gD = grad_gD / (2*ck);
 
     % putting it all together
     grad = [grad_fO(:) + grad_gO(:); grad_fD(:) + grad_gD(:)];

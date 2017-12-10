@@ -116,18 +116,99 @@ classdef srcTest < matlab.unittest.TestCase
 
         function testFullOptimization(testCase)
             p = generateTestParameters();
-            dstar = rand(2*p.N*p.N*p.T, 1);
+            dstar = ones(2*p.N*p.N*p.T, 1);
             u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
+            %u = rand(2*p.N*p.N*p.T, 1);
             opts = struct();
             opts.nIter = 5;
             opts.innerIter = 5;
-            opts.c0 = 4;
-            opts.beta = 8;
+            opts.c0 = 1.5;
+            opts.beta = 2;
+            f0 = objective(p, dstar);
             [actual_dstar, actual_u] = augLagrangeMethod(p, opts, u, dstar);
+            %disp(actual_dstar);
+            fstar = objective(p, actual_dstar);
+            testCase.assertLessThan(fstar, f0);
             testCase.assertEqual(size(actual_dstar), size(dstar));
             testCase.assertNotEqual(actual_dstar, dstar);
             testCase.assertEqual(size(actual_u), size(u));
             testCase.assertNotEqual(actual_u, u);
+            
+        end
+        
+        function testObjectiveSubgradient(testCase)
+            p = generateTestParameters();
+            tol = p.lambda + 1000*eps;
+            
+            p.alphaO = 1;
+            p.alphaD = 1;
+            
+            nVariables = 2*p.N*p.N*p.T;
+            x1 = ones(nVariables, 1);
+            fx1 = objective(p, x1);
+            [grad_fO, grad_fD, ~, ~, ~, ~] = objectiveSubgradient(p, x1);
+            identity = eye(nVariables);
+            
+            dfx1 = [grad_fO; grad_fD];
+            count = 0;
+            for i = 1:nVariables
+                ei = identity(:, i);
+                x2 = x1 + ei;
+                fx2 = objective(p, x2);
+                fx2_approx = fx1 + dot(dfx1, ei);
+                approx_error =  fx2_approx - fx2;
+                if abs(approx_error) > tol
+                    count = count + 1;
+                    fprintf("variable %d: f(x2) = %0.4f; taylor(f)(x2) = %0.4f; error = %0.4f;\n",...
+                            i, fx2, fx2_approx, approx_error);
+                end
+            end
+            testCase.assertEqual(count, 0);
+        end
+        
+        function testSubgradientComponents(testCase)
+            p = generateTestParameters();
+            c = 100;
+            u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
+            tol = p.lambda + 1000*eps;
+            
+            nVariables = 2*p.N*p.N*p.T;
+            x1 = ones(nVariables, 1);
+            fx1 = augmentedLagrangian(p, c, u, x1);
+            dfx1 = subgradAL(p, c, u, x1);
+            identity = eye(nVariables);
+            
+            count = 0;
+            for i = 1:nVariables
+                ei = identity(:, i);
+                x2 = x1 + ei;
+                fx2 = augmentedLagrangian(p, c, u, x2);
+                fx2_approx = fx1 + dot(dfx1, ei);
+                fprintf("var %d: f(x2) = %0.4f; taylor(f)(x2) = %0.4f; error = %0.4f \n", ...
+                        i, fx2, fx2_approx, fx2_approx - fx2);
+                if abs(fx2_approx - fx2) > tol
+                    count = count + 1;
+                end
+            end
+            fprintf("%d\n", count);
+            testCase.assertEqual(count, 0);
+        end
+        
+        function testSubgradient(testCase)
+            p = generateTestParameters();
+            c = 100;
+            u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
+            
+            x1 = zeros(2*p.N*p.N*p.T, 1);
+            fx1 = augmentedLagrangian(p, c, u, x1);
+            
+            x2 = ones(2*p.N*p.N*p.T, 1);
+            fx2 = augmentedLagrangian(p, c, u, x2);
+            
+            df = subgradAL(p, 100, u, x1);
+            fx2_approx = fx1 + dot(df, x2-x1);
+            fprintf("f(x2) = %0.4f; taylor(f)(x2) = %0.4f;", fx2, fx2_approx);
+            % testCase.assertLessThan(abs(fx2 - fx2_approx), 0.001);
         end
 
         function testLargeDemand(testCase)
