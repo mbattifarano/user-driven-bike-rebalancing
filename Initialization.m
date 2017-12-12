@@ -6,7 +6,7 @@ p.C = 100; % maximum daily budget for incentives
 p.lambda = 0.1; % cost to rebalance a bike manually
 p.alphaO = 0.75; % cooperativeness parameter for switching origins
 p.alphaD = 0.75; % cooperativeness parameter for switching destinations
-System = 'London'; % bicycle sharing system (options: 'London', 'Denver', 'Minneapolis')
+System = 'Denver'; % bicycle sharing system (options: 'London', 'Denver', 'Minneapolis')
 TimeInterval = minutes(15); % time step size or interval (options: minutes(1), minutes(5), minutes(10), minutes(15))
 incentive_method = 'exponential_utility'; % method to generate incentive costs (options: 'exponential_utility', 'isoelastic_utility', 'linear_utility', 'translog_utility')
 init_distribution_method = 'Uniform'; % method to generate initial distribution of bikes (options: 'Uniform', 'Normal', 'Poisson', 'Exponential')
@@ -15,9 +15,9 @@ init_distribution_method = 'Uniform'; % method to generate initial distribution 
 % Calculated parameters
 load([System ' ' char(TimeInterval) '.mat']);
 p.N = size(StartDemand,1); % number of stations
-p.T = size(StartDemand,3); % number of time steps
-p.dO = StartDemand; % origin travel demand over time
-p.dD = EndDemand; % destination travel demand over time
+p.T = floor(size(StartDemand,3)/2); % number of time steps
+p.dO = StartDemand(:,:,1:p.T); % origin travel demand over time
+p.dD = EndDemand(:,:,1:p.T); % destination travel demand over time
 station_struct = stationdata(System,p.alphaO,p.alphaD,incentive_method);
 if strcmp(System,'London')
     [station_structIDs,idx2,~] = unique(station_struct.capacity.id);
@@ -75,7 +75,7 @@ p.cO = cO; % incentive required to switch origins
 p.cD = cD; % incentive required to switch destinations
 
 % These are also adjustable parameters, but we will always assume nobody has already accepted an incentive
-p.dOinc = zeros(size(StartDemand)); % origin travel demand that has already accepted an incentive
-p.dDinc = zeros(size(EndDemand)); % destination travel demand that has already accepted an incentive
+p.dOinc = zeros(p.N, p.N, p.T); % origin travel demand that has already accepted an incentive
+p.dDinc = zeros(p.N, p.N, p.T); % destination travel demand that has already accepted an incentive
 
 end
