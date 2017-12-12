@@ -16,7 +16,7 @@ init_distribution_method = 'Uniform'; % method to generate initial distribution 
 % Calculated parameters
 load([System ' ' char(TimeInterval) '.mat']);
 p.N = size(StartDemand,1); % number of stations
-p.T = size(StartDemand,2); % number of time steps
+p.T = size(StartDemand,3); % number of time steps
 p.dO = StartDemand; % origin travel demand over time
 p.dD = EndDemand; % destination travel demand over time
 station_struct = stationdata(System,p.alphaO,p.alphaD,incentive_method);
