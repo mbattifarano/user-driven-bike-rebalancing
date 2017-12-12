@@ -4,8 +4,8 @@ fprintf("Preparing data and parameters.\n");
 %% Setup problem parameters/data
 p = Initialization();
 
-p.b = p.b*2;
-p.s = p.b/2; % correct for supply infeasibility
+% p.b = p.b*2;
+% p.s = p.b/2; % correct for supply infeasibility
 
 
 % convert to column matrices
@@ -33,3 +33,5 @@ x_init = ones(2*p.N*p.N*p.T, 1);
 
 fprintf("Starting optimization.\n")
 [x, u, history] = augLagrangeMethod(p, opts, u_init, x_init);
+
+save(sprintf("results-%s.mat", datetime));
