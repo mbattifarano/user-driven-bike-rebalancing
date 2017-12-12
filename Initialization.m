@@ -2,12 +2,11 @@ function p = Initialization()
 
 % PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% p.T = 288; % timestep horizon (p.T*TimeInterval represents length of horizon in minutes)
 p.C = 100; % maximum daily budget for incentives
 p.lambda = 0.1; % cost to rebalance a bike manually
 p.alphaO = 0.75; % cooperativeness parameter for switching origins
 p.alphaD = 0.75; % cooperativeness parameter for switching destinations
-System = 'Denver'; % bicycle sharing system (options: 'London', 'Denver', 'Minneapolis')
+System = 'London'; % bicycle sharing system (options: 'London', 'Denver', 'Minneapolis')
 TimeInterval = minutes(15); % time step size or interval (options: minutes(1), minutes(5), minutes(10), minutes(15))
 incentive_method = 'exponential_utility'; % method to generate incentive costs (options: 'exponential_utility', 'isoelastic_utility', 'linear_utility', 'translog_utility')
 init_distribution_method = 'Uniform'; % method to generate initial distribution of bikes (options: 'Uniform', 'Normal', 'Poisson', 'Exponential')
