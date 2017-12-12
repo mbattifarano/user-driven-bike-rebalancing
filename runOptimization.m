@@ -18,8 +18,8 @@ opts = struct();
 
 opts.nIter = 10;
 opts.innerIter = 5;
-opts.c0 = 100;
-opts.beta = 8;
+opts.c0 = 4;
+opts.beta = 2;
 
 %% Run algorithm
 
