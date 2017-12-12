@@ -19,6 +19,6 @@ function [x, history] = subgradientDescent(parameters, nIter, ck, u, dstar_init)
 end
 
 function [t] = stepSize(k)
-    t = 1/k;
+    t = 1/(100*k);
 end
 

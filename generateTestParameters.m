@@ -22,8 +22,8 @@ function [parameters] = generateTestParameters()
     p.cD = cD(:);   % incentive required to change origin or desination station
     p.s = floor(p.b / 2);   % initial number of bicycles at each station
 
-    p.dO = zeros(p.N*p.N*p.T, 1); %populateDemandMatrix(p, -1); % O-D-t travel demand
-    p.dD = zeros(p.N*p.N*p.T, 1); %populateDemandMatrix(p, -1); % O-D-t travel demand
+    p.dO = populateDemandMatrix(p, -1); % O-D-t travel demand
+    p.dD = populateDemandMatrix(p, -1); % O-D-t travel demand
     
     p.dOinc = populateDemandMatrix(p, 3); % O-D-t travel demand that has already accepted an incentive
     p.dDinc = populateDemandMatrix(p, 4); % O-D-t travel demand that has already accepted an incentive

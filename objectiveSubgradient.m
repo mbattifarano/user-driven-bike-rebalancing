@@ -1,4 +1,4 @@
-function [grad_fO, grad_fD, gfO, gfD, cO, cD] = objectiveSubgradient(p, dstar)
+function [grad] = objectiveSubgradient(p, dstar)
 %OBJECTIVESUBGRADIENT Compute the subgradient wrt the objective function
 %   used internally to support the subgradient of the augmented lagrangian
     u = support();
@@ -18,6 +18,7 @@ function [grad_fO, grad_fD, gfO, gfD, cO, cD] = objectiveSubgradient(p, dstar)
     gfD = (p.lambda * p.alphaD * (sign_fhat_j - sign_fhat_i));
     grad_fO = gfO(:) .* sign(dstarO(:)) + (p.alphaO * cO(:));
     grad_fD = gfD(:) .* sign(dstarD(:)) + (p.alphaD * cD(:));
+    grad = [grad_fO; grad_fD];
 end
 
 function [y] = signZero(x)
