@@ -16,8 +16,8 @@ function [grad] = objectiveSubgradient(p, dstar)
     % objective function gradient
     gfO = (p.lambda * p.alphaO * (sign_fhat_i - sign_fhat_j));
     gfD = (p.lambda * p.alphaD * (sign_fhat_j - sign_fhat_i));
-    grad_fO = gfO(:) .* signZero(dstarO(:)) + (p.alphaO * cO(:));
-    grad_fD = gfD(:) .* signZero(dstarD(:)) + (p.alphaD * cD(:));
+    grad_fO = gfO(:) + (p.alphaO * cO(:));
+    grad_fD = gfD(:) + (p.alphaD * cD(:));
     grad = [grad_fO; grad_fD];
 end
 
