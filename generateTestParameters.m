@@ -10,8 +10,8 @@ function [parameters] = generateTestParameters()
     %% given data
     p.N = 5;            %   number of stations
     p.T = 3;            %   number of timesteps
-    p.C = 100;          %   daily budget for incentives
-    p.lambda = 2.5;     %   cost to rebalance a bike manually
+    p.C = 1000;          %   daily budget for incentives
+    p.lambda = 3;     %   cost to rebalance a bike manually
     p.alphaO = 0.75;    %   cooperativeness parameter for switching origins
     p.alphaD = 0.5;    %   cooperativeness parameter for switching destinations
     p.b = randi([5, 10], p.N, 1);   % station capacity
@@ -25,11 +25,8 @@ function [parameters] = generateTestParameters()
     p.dO = populateDemandMatrix(p, -1); % O-D-t travel demand
     p.dD = populateDemandMatrix(p, -1); % O-D-t travel demand
     
-    p.dOinc = populateDemandMatrix(p, 3); % O-D-t travel demand that has already accepted an incentive
-    p.dDinc = populateDemandMatrix(p, 4); % O-D-t travel demand that has already accepted an incentive
-    %% computed data
-    
-    
+    p.dOinc = populateDemandMatrix(p, 0); % O-D-t travel demand that has already accepted an incentive
+    p.dDinc = populateDemandMatrix(p, 0); % O-D-t travel demand that has already accepted an incentive
 
     parameters = p;
 end
