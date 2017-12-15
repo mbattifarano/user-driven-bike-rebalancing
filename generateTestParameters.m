@@ -25,8 +25,8 @@ function [parameters] = generateTestParameters()
     p.dO = populateDemandMatrix(p, -1); % O-D-t travel demand
     p.dD = populateDemandMatrix(p, -1); % O-D-t travel demand
     
-    p.dOinc = populateDemandMatrix(p, 3); % O-D-t travel demand that has already accepted an incentive
-    p.dDinc = populateDemandMatrix(p, 4); % O-D-t travel demand that has already accepted an incentive
+    p.dOinc = populateDemandMatrix(p, 0); % O-D-t travel demand that has already accepted an incentive
+    p.dDinc = populateDemandMatrix(p, 0); % O-D-t travel demand that has already accepted an incentive
 
     parameters = p;
 end

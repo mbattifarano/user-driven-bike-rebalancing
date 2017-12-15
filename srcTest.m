@@ -134,20 +134,19 @@ classdef srcTest < matlab.unittest.TestCase
             u = rand(2*p.N*p.N*p.T + 2*p.N*p.T + 1, 1);
             %u = rand(2*p.N*p.N*p.T, 1);
             opts = struct();
-            opts.nIter = 5;
-            opts.innerIter = 5;
+            opts.nIter = 150;
+            opts.innerIter = 2000;
             opts.c0 = 1.5;
             opts.beta = 2;
             f0 = objective(p, dstar);
-            [actual_dstar, actual_u] = augLagrangeMethod(p, opts, u, dstar);
-            %disp(actual_dstar);
+            [actual_dstar, actual_u, ~] = augLagrangeMethod(p, opts, u, dstar);
+
             fstar = objective(p, actual_dstar);
             testCase.assertLessThan(fstar, f0);
             testCase.assertEqual(size(actual_dstar), size(dstar));
             testCase.assertNotEqual(actual_dstar, dstar);
             testCase.assertEqual(size(actual_u), size(u));
             testCase.assertNotEqual(actual_u, u);
-            
         end
         
         function testObjectiveSubgradient(testCase)

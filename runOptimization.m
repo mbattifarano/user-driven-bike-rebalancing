@@ -4,8 +4,8 @@ fprintf("Preparing data and parameters.\n");
 %% Setup problem parameters/data
 p = Initialization();
 
-% p.b = p.b*2;
-% p.s = p.b/2; % correct for supply infeasibility
+p.b = p.b*2;
+p.s = p.b/2; % correct for supply infeasibility
 
 
 % convert to column matrices
@@ -20,10 +20,11 @@ p.dDinc = p.dDinc(:);
 
 opts = struct();
 
-opts.nIter = 20;
+opts.nIter = 5;
 opts.innerIter = 1000;
 opts.c0 = 5;
 opts.beta = 5;
+opts.gamma = 50;
 
 %% Run algorithm
 
@@ -34,4 +35,14 @@ x_init = ones(2*p.N*p.N*p.T, 1);
 fprintf("Starting optimization.\n")
 [x, u, history] = augLagrangeMethod(p, opts, u_init, x_init);
 
+%% plot results
+objValues = vertcat(history(:).objectiveValues);
+
+figure;
+semilogy(objValues);
+xlabel("iterations");
+ylabel("objective value ($)");
+title(sprintf("Objective value for %s (\\alpha_O=%0.2f; \\alpha_D=%0.2f)", p.system, p.alphaO, p.alphaD));
+
+%% Save data
 save(sprintf("results-%s.mat", datetime));

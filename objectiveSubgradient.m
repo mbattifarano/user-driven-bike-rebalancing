@@ -23,5 +23,5 @@ end
 
 function [y] = signZero(x)
     y = sign(x);
-    y(y==0) = 1;
+    y(y==0) = 0;
 end

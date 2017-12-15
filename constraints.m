@@ -19,7 +19,10 @@ function [values] = constraints(parameters, dstar, log)
     if log
      fprintf("Negative demand shift violations: %d\n", sum(dstar<0));
      fprintf("Exceeds incentive budget? %d.\n",p.alphaO * dot(cO(:), dstarO(:)) + p.alphaD * dot(cD(:), dstarD(:)) > p.C);
-     fprintf("Lower bound violations: %d\n", sum(-s(:) - bike_count(:) > 0));
+%      if sum(s(:) + bike_count(:) < 0) > 0
+%          keyboard;
+%      end
+     fprintf("Lower bound violations: %d\n", sum(s(:) + bike_count(:) < 0));
      fprintf("Upper bound violations: %d\n", sum(s(:) + bike_count(:) - b(:)> 0));
     end
     values = [

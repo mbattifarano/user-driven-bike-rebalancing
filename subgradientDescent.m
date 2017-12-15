@@ -1,4 +1,4 @@
-function [x, history] = subgradientDescent(parameters, nIter, ck, u, dstar_init)
+function [x, history] = subgradientDescent(parameters, nIter, gamma, ck, u, dstar_init)
 %SUBGRADIENTDESCENT
     objValues = zeros(nIter, 1);
     augObjValues = zeros(nIter, 1);
@@ -6,7 +6,7 @@ function [x, history] = subgradientDescent(parameters, nIter, ck, u, dstar_init)
     for i = 1:nIter
         direction = subgradAL(parameters, ck, u, x);
         %usersOld = sum(x);
-        x = x - stepSize(i) * direction;
+        x = x - stepSize(gamma, i) * direction;
         %usersNew = sum(x);
         %fprintf("adding %0.2f incentivized users.\n", usersNew - usersOld);
         x = max(0, x);
@@ -20,7 +20,7 @@ function [x, history] = subgradientDescent(parameters, nIter, ck, u, dstar_init)
     history.augmentedLagrangianValues = augObjValues;
 end
 
-function [t] = stepSize(k)
-    t = 1/(k*10^4);
+function [t] = stepSize(gamma, k)
+    t = 1/(k*gamma);
     %t = 10^-3;
 end
